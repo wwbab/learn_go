@@ -27,3 +27,13 @@ func TestHello(t *testing.T) {
   want := "Bonjour, Alice"
   assertCorrectMessage(t, got, want)
  })
+}
+
+ // assertCorrectMessage 辅助函数，用于断言 Hello 函数的输出是否符合预期
+func assertCorrectMessage(t testing.TB, got, want string) {
+    t.Helper()
+    if got != want {
+     t.Errorf("got %q want %q", got, want)
+    }
+}
+
