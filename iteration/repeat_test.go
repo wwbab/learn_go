@@ -1,13 +1,18 @@
 package iteration
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
+
+const repeatCount = 5
 
 func Repeat(character string) string {
-	var repeat string
-	for i := 0; i < 5; i++ {
-		repeat = repeat + character
+	var repeated strings.Builder
+	for i := 0; i < repeatCount; i++ {
+		repeated.WriteString(character)
 	} 
-	return repeat
+	return repeated.String()
 }
 func TestRepeat(t *testing.T) {
 	repeat := Repeat("a")
@@ -15,5 +20,11 @@ func TestRepeat(t *testing.T) {
 
 	if repeat != expected {
 		t.Errorf("expected '%s' but got '%s'", expected, repeat)
+	}
+}
+
+func BenchmarkRepeat(b *testing.B) {
+	for i := 0; i < b.N ; i++ {
+		Repeat("a")
 	}
 }
