@@ -14,7 +14,7 @@ import (
 func main() {
     // 设置随机数的最大值为 100
     maxNum := 100
-    // 以当前时间的纳秒值作为随机数种子
+    // 以当前时间的纳秒值作为随机数生成器的种子
     rand.Seed(time.Now().UnixNano())
     // 生成一个 0 到 maxNum 之间的随机数，作为秘密数字
     secretNumber := rand.Intn(maxNum)
@@ -44,4 +44,13 @@ func main() {
     }
     // 打印用户猜测的数字
     fmt.Println("You guess is", guess)
+    // 判断用户猜测的数字与秘密数字的大小关系，并给出相应的提示
+    if guess > secretNumber {
+        fmt.Println("Your guess is bigger than the secret number. Please try again")
+    } else if guess < secretNumber {
+        fmt.Println("Your guess is smaller than the secret number. Please try again")
+    } else {
+        // 如果用户猜对了，打印祝贺信息
+        fmt.Println("Correct, you Legend!")
+    }
 }
