@@ -15,6 +15,26 @@ type DictRequest struct {
 	Source    string `json:"source"`
 	User_id   string `json:"user_id"`
 }
+// 定义一个结构体，用于存储 JSON 响应数据
+type DictResponse struct {
+	Rc int `json:"rc"`
+	Wiki struct {
+	} `json:"wiki"`
+	Dictionary struct {
+		Prons struct {
+			EnUs string `json:"en-us"`
+			En string `json:"en"`
+		} `json:"prons"`
+		Explanations []string `json:"explanations"`
+		Synonym []string `json:"synonym"`
+		Antonym []string `json:"antonym"`
+		WqxExample [][]string `json:"wqx_example"`
+		Entry string `json:"entry"`
+		Type string `json:"type"`
+		Related []interface{} `json:"related"`
+		Source string `json:"source"`
+	} `json:"dictionary"`
+}
 
 // main 函数是程序的入口点
 func main() {
@@ -75,5 +95,14 @@ if err!= nil {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%s\n", bodyText)
+	// 定义一个名为 dictResponse 的变量，类型为 DictResponse
+	var dictResponse DictResponse
+	// 将 JSON 格式的 bodyText 解析到 dictResponse 变量中
+	err = json.Unmarshal(bodyText, &dictResponse)
+	// 如果解析过程中发生错误，记录错误并终止程序
+	if err!= nil {
+    	log.Fatal(err)
+	}
+	// 打印解析后的 dictResponse 变量的详细信息
+	fmt.Printf("%#v\n", dictResponse)
 }
