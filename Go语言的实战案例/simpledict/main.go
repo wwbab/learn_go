@@ -1,18 +1,33 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strings"
 )
+
+// 定义一个结构体，用于存储 JSON 数据
+type DictRequest struct {
+	TransType string `json:"trans_type"`
+	Source    string `json:"source"`
+	User_id   string `json:"user_id"`
+}
 
 // main 函数是程序的入口点
 func main() {
     client := &http.Client{}
+	request := DictRequest{TransType: "en2zh", Source: "good"}
+	buf, err := json.Marshal(request)
+	// 检查错误是否发生
+if err!= nil {
+    // 如果发生错误，使用 log.Fatal 记录错误并终止程序
+    log.Fatal(err)
+}
     // 创建一个新的 Reader，用于读取 JSON 数据
-    var data = strings.NewReader(`{"trans_type":"en2zh","source":"good"}`)
+    var data = bytes.NewReader(buf)
     // 创建一个 HTTP POST 请求，目标 URL 是彩云小译的翻译 API
     req, err := http.NewRequest("POST", "https://api.interpreter.caiyunai.com/v1/dict", data)
     // 如果创建请求时发生错误，记录错误并终止程序
