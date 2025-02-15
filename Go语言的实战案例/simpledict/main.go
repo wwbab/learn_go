@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 // 定义一个结构体，用于存储 JSON 数据
@@ -36,10 +37,10 @@ type DictResponse struct {
 	} `json:"dictionary"`
 }
 
-// main 函数是程序的入口点
-func main() {
+// 定义一个函数，用于查询单词并打印结果
+func query(word string) {
     client := &http.Client{}
-	request := DictRequest{TransType: "en2zh", Source: "good"}
+	request := DictRequest{TransType: "en2zh", Source: word}
 	buf, err := json.Marshal(request)
 	// 检查错误是否发生
 if err!= nil {
@@ -95,6 +96,10 @@ if err!= nil {
 	if err != nil {
 		log.Fatal(err)
 	}
+	//检查响应状态码是否为 200
+	if resp.StatusCode != 200 {
+		log.Fatal("bad Statuscode:",resp.StatusCode,"body",string(bodyText))
+	}
 	// 定义一个名为 dictResponse 的变量，类型为 DictResponse
 	var dictResponse DictResponse
 	// 将 JSON 格式的 bodyText 解析到 dictResponse 变量中
@@ -103,6 +108,25 @@ if err!= nil {
 	if err!= nil {
     	log.Fatal(err)
 	}
-	// 打印解析后的 dictResponse 变量的详细信息
-	fmt.Printf("%#v\n", dictResponse)
+	// 打印单词的英式和美式发音
+	fmt.Println(word, "UK:", dictResponse.Dictionary.Prons.En, "US:", dictResponse.Dictionary.Prons.EnUs)
+	// 遍历解释列表并打印每个解释项
+	for _, item := range dictResponse.Dictionary.Explanations {
+    	fmt.Println(item)
+		}
+}
+func main() {
+    // 检查命令行参数数量是否正确
+    if len(os.Args) != 2 {
+        // 如果参数数量不正确，打印使用帮助信息到标准错误输出
+        fmt.Fprintf(os.Stderr, `usage: simpleDict WORD
+example: simpleDict hello
+        `)
+        // 程序以非零状态码 1 退出，表示有错误发生
+        os.Exit(1)
+    }
+    // 获取命令行参数中的单词
+    word := os.Args[1]
+    // 调用 query 函数查询单词
+    query(word)
 }
